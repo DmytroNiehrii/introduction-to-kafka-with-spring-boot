@@ -29,3 +29,16 @@ Plenty of useful information about your Introduction to Kafka with Spring Boot c
 ## Connect with the team at Lydtech Consulting
 * Visit us at [lydtechconsulting.com](https://www.lydtechconsulting.com/)
 * Visit our [LinkedIn](https://www.linkedin.com/company/lydtech-consulting) page
+
+
+```bash
+$ kcat -b localhost:9093 -P -t order.created
+{"orderId":"8b83da7a-57e0-4b1b-b850-68d2b108a5ea", "item":"item1"}
+{"orderId":"8b83da7a-57e0-4b1b-b850-68d2b108a5eb", "item":"item2"}
+
+# exit (control-D)
+$ kcat -b localhost:9093 -C -t order.created
+{"orderId":"8b83da7a-57e0-4b1b-b850-68d2b108a5ea", "item":"item1"}
+{"orderId":"8b83da7a-57e0-4b1b-b850-68d2b108a5eb", "item":"item2"}
+% Reached end of topic t1 [1] at offset 1
+% Reached end of topic t1 [0] at offset 2

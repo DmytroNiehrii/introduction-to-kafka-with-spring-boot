@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  zookeeper_1:
+    image: confluentinc/cp-zookeeper:5.3.0
+    platform: linux/amd64
+    ports:
+      - 12181:12181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 12181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka_1:
+    image: confluentinc/cp-kafka:5.3.0
+    platform: linux/amd64
+    ports:
+      - 19092:19092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper_1:12181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_1:9092,PLAINTEXT_HOST://localhost:19092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    depends_on:
+      - zookeeper_1
+
+  akhq_1:
+    image: tchiotludo/akhq
+    environment:
+      AKHQ_CONFIGURATION: |
+        micronaut:
+          security:
+            enabled: false
+        akhq:
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: "kafka_1:9092"
+    ports:
+      - 18080:8080
+    links:
+      - kafka_1
